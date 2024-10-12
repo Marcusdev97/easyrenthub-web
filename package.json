@@ -2,11 +2,11 @@
   "name": "easyrenthub-web",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "start": "node src/api/server.js", 
-  "dev": "nodemon src/api/server.js",
-  "build": "react-scripts build"
-},
+  "scripts": {
+    "start": "node src/api/server.js",
+    "dev": "nodemon src/api/server.js",
+    "build": "react-scripts build"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -15,7 +15,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "mysql2": "^3.11.3",
-    "react": "^18.3.1"
+    "react": "^18.3.1",
+    "react-scripts": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
