@@ -3,7 +3,7 @@ const cors = require('cors');
 
 // CORS options
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' ? 'https://myeasyrenthub.com' : '*',
+  origin: process.env.NODE_ENV === 'production' ? 'https://myeasyrenthub.com' : 'http://localhost:3000',
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 };
