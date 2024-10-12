@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/rented_property.css">
+    <link rel="stylesheet" href="../../fontawesome-free-6.6.0-web/css/all.min.css">
+    <title>Rented Properties</title>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <ul class="menu">
+          <li id="menu-icon">
+              <i class="fa-solid fa-bars"></i> <span class="menu-text">Admin Menu</span>
+          </li>
+          <li><a href="index.html"><i class="fas fa-home"></i> <span class="menu-text">Home</span></a></li>
+          <li><a href="add_property.html"><i class="fas fa-plus"></i> <span class="menu-text">Add Property</span></a></li>
+          <li><a href="edit_property.html"><i class="fas fa-edit"></i> <span class="menu-text">Edit Property</span></a></li>
+          <li><a href="rented_property.html"><i class="fas fa-house-user"></i> <span class="menu-text">Rented Property</span></a></li>
+      </ul>
+  </div>
+    <div class="main-content">
+      <header>
+        <h1>My Rented Properties List</h1>
+      </header>
+      <div class="content-section">
+        <div id="rentedPropertyList"></div>
+        <!-- Property cards will be dynamically injected here by JavaScript -->
+        </ul>
+      </div>
+
+    <!-- Modal structure -->
+    <div id="editModal" class="editModal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <form id="editForm">
+              <input type="hidden" id="property_id" name="property_id">
+
+              <div class="modal-section">
+                  <h3 id="modalTitle" class="modal-title">Edit Property Details</h3>
+
+                  <!-- Removed 'for' since it's not associated with a form control -->
+                  <label>Rental Amount:</label>
+                  <span id="rental_amount"></span> <!-- Correctly used without 'for' -->
+
+                  <label for="unit_number">Unit Number:</label>
+                  <input type="text" id="unit_number" name="unit_number">
+
+                  <label for="check_in_date">Check-in Date:</label>
+                  <input type="datetime-local" id="check_in_date" name="check_in_date">
+
+                  <label for="security_deposit">Security Deposit:</label>
+                  <input type="text" id="security_deposit" name="security_deposit" readonly>
+
+                  <label for="security_utilities_deposit">Security Utilities Deposit:</label>
+                  <input type="text" id="security_utilities_deposit" name="security_utilities_deposit" readonly>
+
+                  <label for="access_card_deposit">Access Card Deposit:</label>
+                  <input type="text" id="access_card_deposit" name="access_card_deposit">
+
+                  <label for="other_deposit">Other (please indicate):</label>
+                  <input type="text" id="other_deposit" name="other_deposit">
+
+                  <label for="special_condition">Special Condition:</label>
+                  <input type="text" id="special_condition" name="special_condition">
+
+                  <label for="tenancy_fees">Tenancy Fees:</label>
+                  <input type="text" id="tenancy_fees" name="tenancy_fees">
+
+                  <h3>Total: <span id="total_deposit"></span></h3>
+              </div>
+
+              <div class="modal-section">
+                  <h3>Other Details</h3>
+                  <div class="checkbox-container">
+                    <label for="internet_needed">Internet Needed:</label>
+                    <input type="checkbox" id="internet_needed" name="internet_needed">
+                  </div>
+                  <label for="remark">Remarks:</label>
+                  <textarea id="remark" name="remark"></textarea>
+              </div>
+
+              <div class="modal-section" style="width: 100%; text-align: center;">
+                  <button type="submit">Save</button>
+              </div>
+          </form>
+      </div>
+    </div>
+
+
+    </div>
+  </div>
+  <script src="/js/rented_property.js"></script>
+</body>
+</html>

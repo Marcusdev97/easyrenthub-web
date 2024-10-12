@@ -1,0 +1,124 @@
+/* src/styles/LocationDetails.css */
+
+/* General Styles */
+.location-info-page {
+  padding: 20px;
+  max-width: 1200px; /* Center the content */
+  margin: 0 auto;
+}
+
+.location-info-page h1 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Card Styles */
+.location-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background-color: #fff;
+  border: 1px solid #e0e0e0; /* Border around the card */
+  border-radius: 8px; /* Rounded corners */
+  margin-bottom: 40px;
+  overflow: hidden;
+}
+
+.location-card:nth-child(even) {
+  flex-direction: row-reverse; /* Alternate layout for even cards */
+}
+
+.image-container {
+  flex: 1;
+  max-width: 50%; /* Ensure images don't get too wide */
+  position: relative; /* For absolute positioning of the image */
+  overflow: hidden;
+}
+
+.location-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9; /* Maintain aspect ratio */
+  object-fit: cover;
+  display: block;
+}
+
+/* Enforce consistent image height */
+.image-container::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio (9/16 = 56.25%) */
+}
+
+.location-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.location-description {
+  flex: 1;
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: grey;
+}
+
+.location-description h2 {
+  margin: 0 0 20px 0;
+  font-size: 28px;
+  color: black;
+}
+
+.location-description p {
+  margin: 0 0 20px 0;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.navigation-link {
+  padding: 12px 24px;
+  background-color: #007BFF;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 4px;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+.navigation-link:hover {
+  background-color: #0056b3;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .location-card {
+    flex-direction: column;
+  }
+
+  .location-card:nth-child(even) {
+    flex-direction: column; /* Remove alternate layout on mobile */
+  }
+
+  .image-container {
+    max-width: 100%;
+  }
+
+  .location-description {
+    padding: 20px;
+  }
+
+  .location-description h2 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .navigation-link {
+    font-size: 14px;
+    padding: 10px 20px;
+    align-self: center;
+  }
+}

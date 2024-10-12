@@ -1,0 +1,52 @@
+/* src/styles/Header.css */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .logo-container {
+    flex: 1;
+  }
+  
+  .header-image {
+    object-fit: contain;
+  }
+  
+  @media (min-width: 769px) {
+    .header-image {
+      height: 56px; /* Adjust as needed for the banner image */
+      
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header-image {
+      height: 40px;
+    }
+  }
+  
+  .nav {
+    flex: 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+  }
+  
+  .nav-link {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    transition: border-bottom 0.3s ease;
+    border-bottom: none;
+  }
+  
+  .nav-link.active {
+    border-bottom: 3px solid #1a73e8;
+  }
+  
