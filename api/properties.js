@@ -2,9 +2,9 @@ const mysql = require('mysql2/promise');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: ['https://myeasyrenthub.com'], // 允许的前端域名
-  methods: ['GET', 'POST', 'OPTIONS'], // 允许的方法
-  credentials: true, // 允许发送cookie等凭据
+  origin: process.env.NODE_ENV === 'production' ? 'https://myeasyrenthub.com' : '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
