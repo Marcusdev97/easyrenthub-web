@@ -1,12 +1,13 @@
 const mysql = require('mysql2/promise');
-const Cors = require('cors');
+const cors = require('cors');
 
-// Initialize CORS middleware
-const cors = Cors({
-  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://myeasyrenthub.com',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  credentials: true,
-});
+const corsOptions = {
+  origin: ['https://myeasyrenthub.com'], // 允许的前端域名
+  methods: ['GET', 'POST', 'OPTIONS'], // 允许的方法
+  credentials: true, // 允许发送cookie等凭据
+};
+
+app.use(cors(corsOptions));
 
 // Run middleware helper function
 function runMiddleware(req, res, fn) {
