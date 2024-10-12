@@ -1,7 +1,7 @@
 // src/components/PropertyList.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchProperties } from '../utils/api';  // Fetch properties from utils/api
+import { fetchProperties } from '../utils/api'; // Fetch properties from utils/api
 import '../styles/PropertyList.css';
 import '../fontawesome-free-6.6.0-web/css/all.min.css';
 
@@ -86,11 +86,13 @@ const PropertyList = () => {
   useEffect(() => {
     const fetchPropertiesData = async () => {
       try {
-        const data = await fetchProperties();  // Use fetchProperties from utils/api
+        const data = await fetchProperties(); // Use fetchProperties from utils/api
         setProperties(data);
-        setFilteredProperties(data);  // Initially show all properties
+        setFilteredProperties(data); // Initially show all properties
       } catch (error) {
         console.error('Error fetching properties:', error);
+        setProperties([]); // Ensure properties is an array
+        setFilteredProperties([]);
       }
     };
 
@@ -103,7 +105,7 @@ const PropertyList = () => {
   useEffect(() => {
     if (searchValue) {
       const filtered = properties.filter((property) =>
-        property.location.toLowerCase() === searchValue.toLowerCase()
+        property.location.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredProperties(filtered);
     } else {
@@ -119,41 +121,23 @@ const PropertyList = () => {
   const renderImages = (images) => {
     if (!images) return null;
 
-    // Parse images if it's a string that looks like an array
-    if (typeof images === 'string') {
-      try {
-        images = JSON.parse(images);
-      } catch (e) {
-        console.error('Failed to parse images:', images);
-        return null;
-      }
-    }
-
+    // images should already be an array from the API response
     if (!Array.isArray(images) || images.length === 0) return null;
 
     // Use the first image in the array
     const firstImage = images[0];
-    const backendUrl = 'http://localhost:8080'; // Backend base URL for serving images
 
-    // Construct the full image URL properly
-    const fullImageUrl = firstImage.startsWith('http')
-      ? firstImage
-      : `${backendUrl.replace(/\/$/, '')}/${firstImage.replace(/^\//, '')}`;
-
-    // Check if fullImageUrl is accessible
-    console.log('Backend URL:', backendUrl);  // Debug: Log the base backend URL
-    console.log('Constructed Image URL:', fullImageUrl);  // Debug: Log the constructed image URL
-
+    // Since images are full URLs from the API, we can use them directly
     return (
       <div className="property-image-container">
         <img
-          src={fullImageUrl}  // Use the full URL from the backend
+          src={firstImage}
           alt="房源图片"
           className="property-image"
           onError={(e) => {
             e.target.onerror = null; // Prevent infinite loop if fallback fails
-            console.error('Failed to load image:', fullImageUrl);  // Log error if image fails to load
-            e.target.src = "/default-image.png"; // Use a default image if loading fails
+            console.error('Failed to load image:', firstImage); // Log error if image fails to load
+            e.target.src = '/default-image.png'; // Use a default image if loading fails
           }}
         />
       </div>
@@ -161,6 +145,8 @@ const PropertyList = () => {
   };
 
   const formatAvailableDate = (dateString) => {
+    if (!dateString) return '日期未定';
+
     const date = new Date(dateString);
     const now = new Date();
     const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
@@ -173,6 +159,8 @@ const PropertyList = () => {
       }
     } else if (date.getFullYear() > now.getFullYear()) {
       return `明年${monthNames[date.getMonth()]}`;
+    } else {
+      return '已过期';
     }
   };
 
@@ -196,11 +184,11 @@ const PropertyList = () => {
         </button>
       </div>
 
-      {filteredProperties.length === 0 && searchValue ? (
+      {Array.isArray(filteredProperties) && filteredProperties.length === 0 && searchValue ? (
         <div className="no-results-message">不好意思，目前已经没有这区的单位了</div>
       ) : (
         <div className="property-list">
-          {filteredProperties.map((property) => (
+          {Array.isArray(filteredProperties) && filteredProperties.map((property) => (
             <div key={property.id} className="property-item" onClick={() => handlePropertyClick(property.id)}>
               {renderImages(property.images)}
               <div className="property-details">

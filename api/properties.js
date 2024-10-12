@@ -23,8 +23,8 @@ function runMiddleware(req, res, fn) {
 // Query helper function based on environment
 const getPropertiesQuery = () => {
   return process.env.LOCALHOST === 'true'
-    ? 'SELECT * FROM properties WHERE agent IS NULL' // Fetch unrented properties in localhost
-    : 'SELECT * FROM properties'; // Fetch all properties in production
+    ? 'SELECT * FROM properties WHERE agent IS NULL'
+    : 'SELECT * FROM properties';
 };
 
 module.exports = async (req, res) => {

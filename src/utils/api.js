@@ -7,7 +7,6 @@ const api = axios.create({
 export const fetchProperties = async () => {
   try {
     const response = await api.get('/api/properties');
-    // 后端返回的数据会包含图片的完整 URL
     return response.data;
   } catch (error) {
     console.error('Error fetching properties:', error);
