@@ -34,11 +34,12 @@ module.exports = async (req, res) => {
   console.log('Request query:', req.query);
   console.log('Environment:', process.env.NODE_ENV);
 
+  res.setHeader('Access-Control-Allow-Origin', '*'); 
+
+
   // Run CORS middleware
   await runMiddleware(req, res, cors);
-
   const { id } = req.query;
-
   if (req.method === 'GET') {
     try {
       // Log database connection attempt
@@ -51,6 +52,9 @@ module.exports = async (req, res) => {
         database: process.env.DB_NAME,
         port: process.env.DB_PORT,
       });
+
+      const properties = await getPropertiesFromDatabase();
+      res.status(200).json(properties);
 
       console.log('Database connection established.');
 
