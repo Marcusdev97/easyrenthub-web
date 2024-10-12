@@ -33,6 +33,11 @@ module.exports = async (req, res) => {
     return res.redirect(301, `https://${req.headers.host}${req.url}`);
   }
 
+  // Log request information for debugging
+  console.log('Request method:', req.method);
+  console.log('Request query:', req.query);
+  console.log('Environment:', process.env.NODE_ENV);
+
   // Run CORS middleware
   await runMiddleware(req, res, cors);
 
@@ -40,6 +45,9 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
+      // Log database connection attempt
+      console.log('Attempting to connect to the database...');
+
       const connection = await mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -48,8 +56,11 @@ module.exports = async (req, res) => {
         port: process.env.DB_PORT,
       });
 
+      console.log('Database connection established.');
+
       if (id) {
         // Fetch single property by ID
+        console.log('Fetching property by ID:', id);
         const [propertyResults] = await connection.execute('SELECT * FROM properties WHERE id = ?', [id]);
         
         // Log the property data for debugging
@@ -80,12 +91,11 @@ module.exports = async (req, res) => {
 
       } else {
         // Fetch all properties
+        console.log('Fetching all properties...');
         const [propertyResults] = await connection.execute(getPropertiesQuery());
 
         // Log results for debugging
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Fetched Properties:', propertyResults);
-        }
+        console.log('Fetched Properties:', propertyResults);
 
         const propertiesWithPartners = await Promise.all(propertyResults.map(async (property) => {
           // Parse images as JSON, with error handling
@@ -104,15 +114,14 @@ module.exports = async (req, res) => {
         }));
 
         // Log final properties with partner data
-        if (process.env.NODE_ENV === 'development') {
-          console.log('Properties with Partner Info:', propertiesWithPartners);
-        }
+        console.log('Properties with Partner Info:', propertiesWithPartners);
 
         res.setHeader('Content-Type', 'application/json');
         res.json(propertiesWithPartners);
       }
 
       await connection.end(); // Close connection
+      console.log('Database connection closed.');
     } catch (error) {
       console.error('Database query error:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
