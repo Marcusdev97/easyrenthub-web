@@ -11,6 +11,11 @@
         "config": {
           "distDir": "build"
         }
+      },
+      {
+        "rewrites": [
+            { "source": "/(.*)", "destination": "/" }
+        ]
       }
     ],
     "routes": [
