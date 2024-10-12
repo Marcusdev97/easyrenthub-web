@@ -1,22 +1,23 @@
 {
     "version": 2,
-    "public": true,
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/"
-      }
-    ],
     "builds": [
       {
-        "src": "src/**/*",
+        "src": "package.json",
         "use": "@vercel/static-build"
+      },
+      {
+        "src": "api/**/*.js",
+        "use": "@vercel/node"
       }
     ],
     "routes": [
       {
         "src": "/api/(.*)",
         "dest": "/api/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/"
       }
     ]
   }
