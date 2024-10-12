@@ -28,11 +28,6 @@ const getPropertiesQuery = () => {
 };
 
 module.exports = async (req, res) => {
-  // Redirect HTTP to HTTPS if necessary
-  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV !== 'development') {
-    return res.redirect(301, `https://${req.headers.host}${req.url}`);
-  }
-
   // Log request information for debugging
   console.log('Request method:', req.method);
   console.log('Request query:', req.query);
