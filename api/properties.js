@@ -1,5 +1,7 @@
+import axios from 'axios';
 const mysql = require('mysql2/promise');
 const cors = require('cors');
+
 
 // CORS options
 const corsOptions = {
@@ -7,6 +9,10 @@ const corsOptions = {
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 };
+
+const api = axios.create({
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://myeasyrenthub.com' : 'http://localhost:3000',
+});
 
 // Run middleware helper function
 function runMiddleware(req, res, fn) {
@@ -25,6 +31,16 @@ const getPropertiesQuery = () => {
   return process.env.LOCALHOST === 'true'
     ? 'SELECT * FROM properties WHERE agent IS NULL' // Fetch unrented properties in localhost
     : 'SELECT * FROM properties'; // Fetch all properties in production
+};
+
+export const fetchProperties = async () => {
+  try {
+    const response = await api.get('/api/properties');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching properties:', error);
+    throw error;
+  }
 };
 
 module.exports = async (req, res) => {
