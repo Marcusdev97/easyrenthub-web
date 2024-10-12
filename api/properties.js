@@ -1,13 +1,12 @@
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 
+// CORS options
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' ? 'https://myeasyrenthub.com' : '*',
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 };
-
-app.use(cors(corsOptions));
 
 // Run middleware helper function
 function runMiddleware(req, res, fn) {
@@ -24,8 +23,8 @@ function runMiddleware(req, res, fn) {
 // Query helper function based on environment
 const getPropertiesQuery = () => {
   return process.env.LOCALHOST === 'true'
-    ? 'SELECT * FROM properties WHERE agent IS NULL'  // Fetch unrented properties in localhost
-    : 'SELECT * FROM properties';  // Fetch all properties in production
+    ? 'SELECT * FROM properties WHERE agent IS NULL' // Fetch unrented properties in localhost
+    : 'SELECT * FROM properties'; // Fetch all properties in production
 };
 
 module.exports = async (req, res) => {
@@ -34,11 +33,9 @@ module.exports = async (req, res) => {
   console.log('Request query:', req.query);
   console.log('Environment:', process.env.NODE_ENV);
 
-  res.setHeader('Access-Control-Allow-Origin', '*'); 
-
-
   // Run CORS middleware
-  await runMiddleware(req, res, cors);
+  await runMiddleware(req, res, cors(corsOptions));
+
   const { id } = req.query;
   if (req.method === 'GET') {
     try {
@@ -53,23 +50,20 @@ module.exports = async (req, res) => {
         port: process.env.DB_PORT,
       });
 
-      const properties = await getPropertiesFromDatabase();
-      res.status(200).json(properties);
-
       console.log('Database connection established.');
 
       if (id) {
         // Fetch single property by ID
         console.log('Fetching property by ID:', id);
         const [propertyResults] = await connection.execute('SELECT * FROM properties WHERE id = ?', [id]);
-        
+
         // Log the property data for debugging
         console.log('Property with ID:', id, 'Data:', propertyResults);
 
         if (propertyResults.length === 0) {
           return res.status(404).json({ error: 'Property not found' });
         }
-        
+
         const property = propertyResults[0];
 
         // Parse images as JSON, with error handling
