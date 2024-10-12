@@ -103,7 +103,7 @@ const PropertyList = () => {
 
   // Filter properties based on the search value
   useEffect(() => {
-    if (searchValue) {
+    if (searchValue && Array.isArray(properties)) {
       const filtered = properties.filter((property) =>
         property.location.toLowerCase().includes(searchValue.toLowerCase())
       );
