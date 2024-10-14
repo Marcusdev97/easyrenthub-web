@@ -1,3 +1,5 @@
+// api/test-db-connection.js
+
 const mysql = require('mysql2/promise');
 
 module.exports = async (req, res) => {
@@ -10,7 +12,12 @@ module.exports = async (req, res) => {
       port: process.env.DB_PORT,
     };
 
-    console.log('Attempting to connect to the database with config:', connectionConfig);
+    console.log('Attempting to connect to the database with config:', {
+      host: connectionConfig.host,
+      user: connectionConfig.user,
+      database: connectionConfig.database,
+      port: connectionConfig.port,
+    });
 
     const connection = await mysql.createConnection(connectionConfig);
 
