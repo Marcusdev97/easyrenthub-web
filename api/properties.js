@@ -1,4 +1,3 @@
-// api/properties.js
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 
@@ -31,6 +30,30 @@ const getPropertiesQuery = () => {
     : 'SELECT * FROM properties';
 };
 
+// Function to establish a database connection
+const connectToDatabase = async () => {
+  return await mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+  });
+};
+
+// Check database connection health
+const checkDatabaseHealth = async (req, res) => {
+  try {
+    const connection = await connectToDatabase();
+    await connection.end();
+    res.status(200).json({ status: 'Database connected successfully!' });
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).json({ status: 'Database connection failed', error: error.message });
+  }
+};
+
+// Main API handler
 module.exports = async (req, res) => {
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
@@ -43,15 +66,14 @@ module.exports = async (req, res) => {
     DB_PORT: process.env.DB_PORT,
   });
 
+  // Check if the request is for the database health check
+  if (req.url === '/api/db-health') {
+    return checkDatabaseHealth(req, res); // Call the health check function
+  }
+
   if (req.method === 'GET') {
     try {
-      const connection = await mysql.createConnection({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        port: process.env.DB_PORT,
-      });
+      const connection = await connectToDatabase();
 
       const { id } = req.query;
 
@@ -65,7 +87,6 @@ module.exports = async (req, res) => {
           res.status(404).json({ error: 'Property not found' });
         } else {
           const property = propertyResults[0];
-          // Parse images, fetch partner details, etc.
           res.status(200).json(property);
         }
       } else {
