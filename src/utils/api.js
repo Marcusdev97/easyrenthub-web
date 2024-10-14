@@ -1,12 +1,15 @@
+// src/utils/api.js
 import axios from 'axios';
 
+const baseURL =
+  process.env.NODE_ENV === 'production'
+    ? '/api' // In production, use the same domain
+    : 'http://localhost:3000/api'; // In development, point to the local server
+
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === 'production'
-    ? 'https://myeasyrenthub.com/api'  // For production
-    : 'http://localhost:8080/api',     // For development
+  baseURL: baseURL, // Explicitly set the baseURL property
 });
 
-// Fetch all properties
 export const fetchProperties = async () => {
   try {
     const response = await api.get('/properties');
@@ -17,7 +20,6 @@ export const fetchProperties = async () => {
   }
 };
 
-// Fetch property by ID
 export const fetchPropertyById = async (id) => {
   try {
     const response = await api.get(`/properties?id=${id}`);

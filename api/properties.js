@@ -4,10 +4,7 @@ const cors = require('cors');
 
 // CORS options
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? 'https://myeasyrenthub.com'
-      : 'http://localhost:3000',
+  origin: '*', // Allow all origins in development
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 };
@@ -24,17 +21,7 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-// Query helper function based on environment
-const getPropertiesQuery = () => {
-  return process.env.LOCALHOST === 'true'
-    ? 'SELECT * FROM properties WHERE agent IS NULL'
-    : 'SELECT * FROM properties';
-};
-
 module.exports = async (req, res) => {
-console.log('Function triggered')
-  console.log('Request received at /api/properties');
-
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
 
