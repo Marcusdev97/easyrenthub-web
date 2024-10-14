@@ -23,12 +23,16 @@ function runMiddleware(req, res, fn) {
 module.exports = async (req, res) => {
   console.log('Function invoked');
 
+  res.status(200).json({ message: 'Function is working without database' });
+
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
   console.log('CORS middleware passed');
 
   // Log environment variables (be cautious with sensitive data)
   console.log('Environment Variables:', { host: process.env.DB_HOST, user: process.env.DB_USER });
+
+  console.log(req.method);
 
   if (req.method === 'GET') {
     try {
@@ -41,6 +45,8 @@ module.exports = async (req, res) => {
         port: process.env.DB_PORT,
         // Include SSL options if necessary
       });
+      console.log(connection);
+
       console.log('Database connected');
 
       const { id } = req.query;
