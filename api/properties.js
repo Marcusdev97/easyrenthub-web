@@ -33,7 +33,8 @@ module.exports = async (req, res) => {
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
         port: process.env.DB_PORT,
-      });
+        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : null,
+      });      
 
       const { id } = req.query;
 
