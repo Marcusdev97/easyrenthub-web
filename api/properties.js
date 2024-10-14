@@ -21,18 +21,16 @@ function runMiddleware(req, res, fn) {
 }
 
 module.exports = async (req, res) => {
-  console.log('Function invoked');
-
-  res.status(200).json({ message: 'Function is working without database' });
-
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
   console.log('CORS middleware passed');
 
-  // Log environment variables (be cautious with sensitive data)
+  console.log('Function invoked');
+
+  // Log environment variables (avoid logging sensitive data in production)
   console.log('Environment Variables:', { host: process.env.DB_HOST, user: process.env.DB_USER });
 
-  console.log(req.method);
+  console.log('HTTP Method:', req.method);
 
   if (req.method === 'GET') {
     try {
@@ -45,7 +43,6 @@ module.exports = async (req, res) => {
         port: process.env.DB_PORT,
         // Include SSL options if necessary
       });
-      console.log(connection);
 
       console.log('Database connected');
 
@@ -65,14 +62,13 @@ module.exports = async (req, res) => {
           res.status(404).json({ error: 'Property not found' });
         } else {
           const property = propertyResults[0];
-          // Parse images, fetch partner details, etc.
           console.log('Returning property:', property);
           res.status(200).json(property);
         }
       } else {
         console.log('Fetching all properties');
 
-        // Define the query directly here or ensure getPropertiesQuery() is defined
+        // Ensure your query is correct
         const query = 'SELECT * FROM properties'; // Replace with your actual query
         const [propertyResults] = await connection.execute(query);
         console.log('Property results:', propertyResults);
@@ -84,7 +80,10 @@ module.exports = async (req, res) => {
       console.log('Database connection closed');
     } catch (error) {
       console.error('Database query error:', error);
-      res.status(500).json({ error: 'Internal Server Error', details: error.message });
+      // Ensure that you send a response only once
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
+      }
     }
   } else {
     res.setHeader('Allow', ['GET']);
