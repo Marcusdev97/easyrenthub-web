@@ -25,6 +25,12 @@ module.exports = async (req, res) => {
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
 
+  console.log('Environment Variables:', {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    // Be cautious with logging sensitive data
+  });  
+
   if (req.method === 'GET') {
     try {
       const connection = await mysql.createConnection({
