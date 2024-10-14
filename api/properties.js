@@ -1,10 +1,9 @@
-// api/properties.js
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 
 // CORS options
 const corsOptions = {
-  origin: '*', // Allow all origins in development
+  origin: '*', // Adjust as needed
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 };
@@ -23,51 +22,60 @@ function runMiddleware(req, res, fn) {
 
 module.exports = async (req, res) => {
   console.log('Function invoked');
+
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
   console.log('CORS middleware passed');
 
-
-  console.log('Environment Variables:', {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    // Be cautious with logging sensitive data
-  });  
+  // Log environment variables (be cautious with sensitive data)
+  console.log('Environment Variables:', { host: process.env.DB_HOST, user: process.env.DB_USER });
 
   if (req.method === 'GET') {
     try {
-      console.log('Database connected');
+      console.log('Attempting to connect to the database...');
       const connection = await mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
         port: process.env.DB_PORT,
-        ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : null,
-        connectTimeout: 10000
-      });      
+        // Include SSL options if necessary
+      });
+      console.log('Database connected');
 
       const { id } = req.query;
+      console.log('Request query:', req.query);
 
       if (id) {
+        console.log(`Fetching property with id: ${id}`);
         const [propertyResults] = await connection.execute(
           'SELECT * FROM properties WHERE id = ?',
           [id]
         );
+        console.log('Property results:', propertyResults);
 
         if (propertyResults.length === 0) {
+          console.log('Property not found');
           res.status(404).json({ error: 'Property not found' });
         } else {
           const property = propertyResults[0];
           // Parse images, fetch partner details, etc.
+          console.log('Returning property:', property);
           res.status(200).json(property);
         }
       } else {
-        const [propertyResults] = await connection.execute(getPropertiesQuery());
+        console.log('Fetching all properties');
+
+        // Define the query directly here or ensure getPropertiesQuery() is defined
+        const query = 'SELECT * FROM properties'; // Replace with your actual query
+        const [propertyResults] = await connection.execute(query);
+        console.log('Property results:', propertyResults);
+
         res.status(200).json(propertyResults);
       }
 
       await connection.end();
+      console.log('Database connection closed');
     } catch (error) {
       console.error('Database query error:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
