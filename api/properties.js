@@ -22,8 +22,11 @@ function runMiddleware(req, res, fn) {
 }
 
 module.exports = async (req, res) => {
+  console.log('Function invoked');
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
+  console.log('CORS middleware passed');
+
 
   console.log('Environment Variables:', {
     host: process.env.DB_HOST,
@@ -33,6 +36,7 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
+      console.log('Database connected');
       const connection = await mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -40,6 +44,7 @@ module.exports = async (req, res) => {
         database: process.env.DB_NAME,
         port: process.env.DB_PORT,
         ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : null,
+        connectTimeout: 10000
       });      
 
       const { id } = req.query;
