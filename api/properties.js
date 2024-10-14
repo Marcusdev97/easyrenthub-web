@@ -1,4 +1,3 @@
-// api/properties.js
 const mysql = require('mysql2/promise');
 const cors = require('cors');
 
@@ -12,7 +11,7 @@ const corsOptions = {
   credentials: true,
 };
 
-// Run middleware helper function
+// Middleware helper function
 function runMiddleware(req, res, fn) {
   return new Promise((resolve, reject) => {
     fn(req, res, (result) => {
@@ -24,19 +23,19 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-// Query helper function based on environment
-const getPropertiesQuery = () => {
-  return process.env.LOCALHOST === 'true'
-    ? 'SELECT * FROM properties WHERE agent IS NULL'
-    : 'SELECT * FROM properties';
-};
-
 module.exports = async (req, res) => {
-
-  console.log('Request received at /api/properties');
-
   // Run CORS middleware
   await runMiddleware(req, res, cors(corsOptions));
+
+  console.log('Request received at /api/properties');
+  
+  // Temporarily log database connection details
+  console.log('Database connection details: ', {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+  });
 
   if (req.method === 'GET') {
     try {
@@ -48,27 +47,9 @@ module.exports = async (req, res) => {
         port: process.env.DB_PORT,
       });
 
-      const { id } = req.query;
+      console.log('Database connection established successfully');
 
-      if (id) {
-        const [propertyResults] = await connection.execute(
-          'SELECT * FROM properties WHERE id = ?',
-          [id]
-        );
-
-        if (propertyResults.length === 0) {
-          res.status(404).json({ error: 'Property not found' });
-        } else {
-          const property = propertyResults[0];
-          // Parse images, fetch partner details, etc.
-          res.status(200).json(property);
-        }
-      } else {
-        const [propertyResults] = await connection.execute(getPropertiesQuery());
-        res.status(200).json(propertyResults);
-      }
-
-      await connection.end();
+      // Rest of the code...
     } catch (error) {
       console.error('Database query error:', error);
       res.status(500).json({ error: 'Internal Server Error', details: error.message });
