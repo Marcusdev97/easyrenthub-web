@@ -1,6 +1,8 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
+require('dotenv').config();
+
 
 const app = express();
 const router = express.Router();
@@ -14,6 +16,13 @@ const corsOptions = {
 
 // Use CORS middleware
 app.use(cors(corsOptions));
+console.log('Loaded DB_HOST:', process.env.DB_HOST);
+
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASS:', process.env.DB_PASS);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_PORT:', process.env.DB_PORT);
 
 // API Endpoint: /api/properties
 router.get('/', async (req, res) => {
